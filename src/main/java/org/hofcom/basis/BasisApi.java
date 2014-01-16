@@ -14,19 +14,25 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
+ * Login to the basis webapp and download your data. 
  * 
  * @author hof
  */
 public class BasisApi {
 
+    /* HTTP client performing the requests */ 
     private final AsyncHttpClient httpClient = new AsyncHttpClient(); 
     
+    /* the access token after a succesful login */ 
     private String accessToken = ""; 
     
+    /* the basis-id, take from the user profile */ 
     private String basisId = ""; 
 
+    /** parser of JSON data */ 
     private final ObjectMapper mapper = new ObjectMapper();
     
+    /** execute a GET or POST request with the given headers and parameters */ 
     private Response executeRequest(String method, String url, 
                 Map<String, String> headerLines, Map<String, String> arguments)
                 throws IOException, ExecutionException, InterruptedException { 
@@ -63,6 +69,15 @@ public class BasisApi {
         return r; 
     }
     
+    /** 
+     * Login to the basis web application 
+     * 
+     * @param username
+     * @param password
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException 
+     */
     public void authenticate(String username, String password) throws IOException, 
             ExecutionException, InterruptedException { 
         
@@ -70,12 +85,14 @@ public class BasisApi {
         Map<String, String> arguments = new HashMap<String, String>();
 
         arguments.put("next", "https://app.mybasis.com");
-        arguments.put("username",  username);  // Add the dummy nonce.
+        arguments.put("username",  username);
         arguments.put("password", password); 
         arguments.put("submit", "Login"); 
-         
-        Response r = executeRequest("POST", "https://app.mybasis.com/login", headerLines, arguments);         
-                
+        
+        System.out.print("Logging in: ");
+        Response r = executeRequest("POST", "https://app.mybasis.com/login", headerLines, arguments);                         
+        System.out.print(r.getStatusCode()+" "+r.getStatusText()+" "); 
+        
         /* find the access token */ 
         for (Cookie cookie : r.getCookies()) { 
             if (cookie.getName().equals("access_token")) { 
@@ -106,9 +123,11 @@ public class BasisApi {
         arguments.put("skin_temp", "true");
         arguments.put("air_temp", "true");
         arguments.put("bodystates", "true");
-        
+  
+        System.out.print("Data: "); 
         Response r = executeRequest("GET", "https://app.mybasis.com/api/v1/chart/"+basisId+".json", headerLines, arguments);         
-
+        System.out.println(r.getStatusCode()+" "+r.getStatusText());
+        
         /* save file */ 
         PrintStream out = null;
         try {
@@ -130,8 +149,10 @@ public class BasisApi {
 
         headerLines.put("X-Basis-Authorization", "OAuth "+accessToken); 
         
+        System.out.print("Profile: ");
         Response r = executeRequest("GET", "https://app.mybasis.com/api/v1/user/me.json", headerLines, arguments);         
-
+        System.out.print(r.getStatusCode()+" "+r.getStatusText()+" ");
+        
         /* save file */ 
         PrintStream out = null;
         try {
@@ -161,7 +182,9 @@ public class BasisApi {
         arguments.put("expand", "activities"); 
         arguments.put("type", "run,walk,bike"); 
         
+        System.out.print("Activities: ");
         Response r = executeRequest("GET", "https://app.mybasis.com/api/v2/users/me/days/"+day+"/activities", headerLines, arguments);         
+        System.out.println(r.getStatusCode()+" "+r.getStatusText());
 
         /* save file */ 
         PrintStream out = null;
@@ -185,6 +208,5 @@ public class BasisApi {
 
     public AsyncHttpClient getHttpClient() {
         return httpClient;
-    }
-    
+    }    
 }

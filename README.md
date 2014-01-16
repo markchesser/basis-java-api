@@ -9,19 +9,16 @@ You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.c
 
 You can compile the source, or if you want to quickly download your data: 
 
-1. Download [https://github.com/hof/basis-java-api/releases/download/v0.1/basis-download-0.1-jar-with-dependencies.jar] (https://github.com/hof/basis-java-api/releases/download/v0.1/basis-download-0.1-jar-with-dependencies.jar) 
+1. Download [https://github.com/hof/basis-java-api/releases/download/v0.2/basis-download-0.2-jar-with-dependencies.jar] (https://github.com/hof/basis-java-api/releases/download/v0.2/basis-download-0.2-jar-with-dependencies.jar) 
 
 
 2. Open a command prompt, go to the directory where you downloaded the .jar file and: 
 
-`java -jar basis-download-0.1-jar-with-dependencies.jar <username> <password> YYYY-MM-DD <start_offset> <end_offset>`
-
+`java -jar basis-download-0.2-jar-with-dependencies.jar <username> <password> YYYY-MM-DD`
 
 Username and password are your mybasis.com credentials. 
 
 YYYY-MM-DD is the year, month, day of that day you want to download. 
-
-start_offset and end_offset should be 0. 
 
 After the program completes, your data will be in the following files in the current directory: 
 
@@ -31,3 +28,16 @@ After the program completes, your data will be in the following files in the cur
 
 *activities-YYYY-MM-DD.json* -> your activities for the given day
 
+#### Example output 
+
+```
+
+Basis Data Download 0.2
+Copyright (C) 2014 Erik van het Hof (hof@hofcom.nl @erikvanhethof)
+
+Logging in: 302 Found access_token --> 15112ba78ca14ea0a9740820a066042c
+Profile: 200 OK Basis-ID: 510ffb2091d73079xxxxxxxx
+Data: 200 OK
+Activities: 200 OK
+
+```
